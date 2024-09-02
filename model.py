@@ -231,6 +231,31 @@ st.write(summary_stats)
 fig_summary = px.bar(summary_stats, x=summary_stats.index, y='mean', title='Summary Statistics', labels={'mean': 'Average Value'}, color_discrete_sequence=['#1f77b4'])
 st.plotly_chart(fig_summary)
 
+st.header("Distribution of Numeric Columns")
+numeric_columns = df.select_dtypes(include=[np.number]).columns
+num_charts = len(numeric_columns)
+cols = st.columns(3)
+
+for i, col in enumerate(numeric_columns):
+    with cols[i % 3]:
+        st.subheader(f"Distribution for {col}")
+        fig_dist, ax_dist = plt.subplots(figsize=(5, 3))
+        ax_dist.hist(df[col], bins=20, color='#1f77b4', edgecolor='black')
+        ax_dist.set_title(f'Distribution of {col}')
+        ax_dist.set_xlabel(col)
+        ax_dist.set_ylabel('Frequency')
+        st.pyplot(fig_dist)
+
+# Unique Values and Data Types
+st.header("Unique Values and Data Types")
+data_types = df.dtypes
+unique_values = df.nunique()
+df_info = pd.DataFrame({
+    'Data Type': data_types,
+    'Unique Values': unique_values
+})
+st.write(df_info)
+
 # Correlation Heatmap for all features
 st.header("Correlation Heatmap")
 corr = df.corr()
